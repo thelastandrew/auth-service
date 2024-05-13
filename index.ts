@@ -5,10 +5,14 @@ import { connectToMongo } from './src/mongo-config';
 const { PORT } = config;
 
 const start = async () => {
-  await connectToMongo();
-  app.listen(PORT, () => {
-    console.log(`Servr is up and running on port ${PORT}`);
-  });
+  try {
+    await connectToMongo();
+    app.listen(PORT, () => {
+      console.log(`Servr is up and running on port ${PORT}`);
+    });
+  } catch (error) {
+    console.log('start error', error);
+  }
 };
 
 start();

@@ -5,7 +5,7 @@ const { MONGO_URL } = config;
 
 export const connectToMongo = async () => {
   try {
-    await mongoose.connect(MONGO_URL);
+    await mongoose.connect(MONGO_URL, { dbName: 'development' });
     console.log('Connected to a mongo server');
   } catch (error) {
     mongoose.connection.close();
