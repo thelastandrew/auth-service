@@ -2,27 +2,27 @@ import bcrypt from 'bcrypt';
 import { UserModel } from '../models';
 import { tokenService } from './token-service';
 import { UserDto } from '../dtos';
+import { ApiError } from '../middlewares';
 
 class UserService {
   async registration(username: string, password: string) {
-    try {
-      const candidate = await UserModel.findOne({ username });
-      if (candidate) {
-        throw new Error(`User ${username} already exists`);
-      }
+    const candidate = await UserModel.findOne({ username });
 
-      const passwordHash = await bcrypt.hash(password, 4);
-      const user = await UserModel.create({ username, password: passwordHash });
+    if (candidate) {
+      const error: ApiError = new Error(`User ${username} already exists`);
+      error.status = 401;
 
-      const userDto = new UserDto(user);
-      const tokens = tokenService.generateTokens({ ...userDto });
-      await tokenService.saveToken(userDto.id, tokens.refreshToken);
-
-      return { ...tokens, user: userDto };
-    } catch (error) {
-      console.log('UserService - registration error', error);
       throw error;
     }
+
+    const passwordHash = await bcrypt.hash(password, 4);
+    const user = await UserModel.create({ username, password: passwordHash });
+
+    const userDto = new UserDto(user);
+    const tokens = tokenService.generateTokens({ ...userDto });
+    await tokenService.saveToken(userDto.id, tokens.refreshToken);
+
+    return { ...tokens, user: userDto };
   }
 }
 

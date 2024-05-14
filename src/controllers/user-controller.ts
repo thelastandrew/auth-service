@@ -8,25 +8,15 @@ class UserController {
     req: Request<{}, {}, { username: string; password: string }>,
     res: Response
   ) {
-    try {
-      const { username, password } = req.body;
-      const userData = await userService.registration(username, password);
+    const { username, password } = req.body;
+    const userData = await userService.registration(username, password);
 
-      if (!userData) {
-        res.sendStatus(400);
-        return;
-      }
+    res.cookie('refreshToken', userData.refreshToken, {
+      maxAge: THIRTY_DAYS,
+      httpOnly: true,
+    });
 
-      res.cookie('refreshToken', userData.refreshToken, {
-        maxAge: THIRTY_DAYS,
-        httpOnly: true,
-      });
-
-      res.json(userData);
-    } catch (error) {
-      res.sendStatus(400);
-      console.log('UserController - registration error', error);
-    }
+    res.json(userData);
   }
 
   async login(req: Request, res: Response, next: NextFunction) {
