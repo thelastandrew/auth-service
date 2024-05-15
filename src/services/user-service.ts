@@ -2,17 +2,15 @@ import bcrypt from 'bcrypt';
 import { UserModel } from '../models';
 import { tokenService } from './token-service';
 import { UserDto } from '../dtos';
-import { ApiError } from '../middlewares';
+import { ApiError } from '../exceptions';
+
 
 class UserService {
   async registration(username: string, password: string) {
     const candidate = await UserModel.findOne({ username });
 
     if (candidate) {
-      const error: ApiError = new Error(`User ${username} already exists`);
-      error.status = 401;
-
-      throw error;
+      throw ApiError.BadRequest(`User ${username} already exists`);
     }
 
     const passwordHash = await bcrypt.hash(password, 4);

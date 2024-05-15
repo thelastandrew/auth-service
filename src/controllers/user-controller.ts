@@ -16,7 +16,7 @@ class UserController {
       httpOnly: true,
     });
 
-    res.json(userData);
+    res.status(201).json(userData);
   }
 
   async login(req: Request, res: Response, next: NextFunction) {

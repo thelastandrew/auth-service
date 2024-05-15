@@ -1,18 +1,16 @@
 import { NextFunction, Request, Response } from 'express';
-
-export type ApiError = { status?: number } & Error;
+import { ApiError } from '../exceptions';
 
 export const errorHandler = (
-  err: ApiError,
+  err: ApiError | Error,
   req: Request,
   res: Response,
   next: NextFunction
 ) => {
-  const { status, message } = err;
   console.log(err);
-  if (status) {
-    return res.status(status).json({ message });
+  if (err instanceof ApiError) {
+    return res.status(err.status).json({ message: err.message });
   }
 
-  return res.status(500).json({ message: 'Unexpected' });
+  return res.status(500).json({ message: 'Unexpected error' });
 };
