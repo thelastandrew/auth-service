@@ -1,13 +1,23 @@
 import { Request, Response, NextFunction } from 'express';
 import { userService } from '../services';
+import { tryCatch } from '../utils';
+import { HTTP_STATUSES } from '../constants';
+import { validationBadRequest } from '../middlewares';
 
 const THIRTY_DAYS = 30 * 24 * 60 * 60 * 1000;
 
 class UserController {
   async registration(
     req: Request<{}, {}, { username: string; password: string }>,
-    res: Response
+    res: Response,
+    next: NextFunction
   ) {
+    const error = validationBadRequest(req, 'Request body validation error');
+
+    if (error) {
+      return next(error);
+    }
+
     const { username, password } = req.body;
     const userData = await userService.registration(username, password);
 
@@ -16,28 +26,26 @@ class UserController {
       httpOnly: true,
     });
 
-    res.status(201).json(userData);
+    res.status(HTTP_STATUSES.CREATED_201).json(userData);
   }
 
-  async login(req: Request, res: Response, next: NextFunction) {
-    try {
-    } catch (error) {}
+  async login(req: Request, res: Response) {
   }
 
-  async logout(req: Request, res: Response, next: NextFunction) {
-    try {
-    } catch (error) {}
+  async logout(req: Request, res: Response) {
   }
 
-  async refresh(req: Request, res: Response, next: NextFunction) {
-    try {
-    } catch (error) {}
+  async refresh(req: Request, res: Response) {
   }
 
-  async getUsers(req: Request, res: Response, next: NextFunction) {
-    try {
-    } catch (error) {}
+  async getUsers(req: Request, res: Response) {
   }
 }
 
-export const userController = new UserController();
+const userController = new UserController();
+
+export const registration = tryCatch(userController.registration);
+export const login = tryCatch(userController.login);
+export const logout = tryCatch(userController.logout);
+export const refresh = tryCatch(userController.refresh);
+export const getUsers = tryCatch(userController.getUsers);

@@ -1,5 +1,12 @@
 import { NextFunction, Request, Response } from 'express';
+import { validationResult } from 'express-validator';
 import { ApiError } from '../exceptions';
+import { HTTP_STATUSES } from '../constants';
+
+type ErrorResponse = {
+  message: string;
+  errors?: any[];
+}
 
 export const errorHandler = (
   err: ApiError | Error,
@@ -8,9 +15,22 @@ export const errorHandler = (
   next: NextFunction
 ) => {
   console.log(err);
+  const { message } = err;
   if (err instanceof ApiError) {
-    return res.status(err.status).json({ message: err.message });
+    const { errors } = err;
+    const response: ErrorResponse = { message };
+    if (errors.length > 0) response.errors = errors;
+
+    return res.status(err.status).json(response);
   }
 
-  return res.status(500).json({ message: 'Unexpected error' });
+  return res.status(HTTP_STATUSES.UNEXPECTED_500).json({ message });
 };
+
+export const validationBadRequest = (req: Request, message: string) => {
+    const result = validationResult(req);
+
+    if (!result.isEmpty()) {
+      return ApiError.BadRequest(message, result.array());
+    }
+  };
