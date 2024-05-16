@@ -2,7 +2,6 @@ import { Request, Response, NextFunction } from 'express';
 import { userService } from '../services';
 import { tryCatch } from '../utils';
 import { HTTP_STATUSES } from '../constants';
-import { validationBadRequest } from '../middlewares';
 
 const THIRTY_DAYS = 30 * 24 * 60 * 60 * 1000;
 
@@ -12,12 +11,6 @@ class UserController {
     res: Response,
     next: NextFunction
   ) {
-    const error = validationBadRequest(req, 'Request body validation error');
-
-    if (error) {
-      return next(error);
-    }
-
     const { username, password } = req.body;
     const userData = await userService.registration(username, password);
 

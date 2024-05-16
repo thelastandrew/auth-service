@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import { registration, login, logout, refresh, getUsers } from '../controllers';
-import { requiredBodyUsernameValidation, requiredBodyPasswordValidation } from '../middlewares';
+import { requiredBodyUsernameValidation, requiredBodyPasswordValidation, bodyValidationMiddleware } from '../middlewares';
 
 export const router = Router();
 
@@ -8,6 +8,7 @@ router.post(
   '/registration',
   requiredBodyUsernameValidation,
   requiredBodyPasswordValidation,
+  bodyValidationMiddleware,
   registration,
 );
 router.post('/login', login);
