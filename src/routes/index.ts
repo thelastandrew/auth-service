@@ -16,7 +16,15 @@ router.post(
   bodyValidationMiddleware,
   registration,
 );
-router.post(ROUTES.LOGIN, login);
+
+router.post(
+  ROUTES.LOGIN,
+  requiredBodyUsernameValidation,
+  requiredBodyPasswordValidation,
+  bodyValidationMiddleware,
+  login
+);
+
 router.post(ROUTES.LOGOUT, logout);
 router.get(ROUTES.REFRESH, refresh);
 router.get(ROUTES.USERS, getUsers);
