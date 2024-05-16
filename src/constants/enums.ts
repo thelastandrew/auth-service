@@ -8,3 +8,11 @@ export enum HTTP_STATUSES {
 
   UNEXPECTED_500 = 500
 }
+
+export enum ROUTES {
+  REGISTRATION = '/registration',
+  LOGIN = '/login',
+  LOGOUT = '/logout',
+  REFRESH = '/refresh',
+  USERS = '/users'
+}

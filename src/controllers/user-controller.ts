@@ -1,9 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import { userService } from '../services';
 import { tryCatch } from '../utils';
-import { HTTP_STATUSES } from '../constants';
-
-const THIRTY_DAYS = 30 * 24 * 60 * 60 * 1000;
+import { HTTP_STATUSES, THIRTY_DAYS_NUMBER } from '../constants';
 
 class UserController {
   async registration(
@@ -15,7 +13,7 @@ class UserController {
     const userData = await userService.registration(username, password);
 
     res.cookie('refreshToken', userData.refreshToken, {
-      maxAge: THIRTY_DAYS,
+      maxAge: THIRTY_DAYS_NUMBER,
       httpOnly: true,
     });
 

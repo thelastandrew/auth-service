@@ -1,17 +1,22 @@
 import { Router } from 'express';
 import { registration, login, logout, refresh, getUsers } from '../controllers';
-import { requiredBodyUsernameValidation, requiredBodyPasswordValidation, bodyValidationMiddleware } from '../middlewares';
+import {
+  requiredBodyUsernameValidation,
+  requiredBodyPasswordValidation,
+  bodyValidationMiddleware,
+} from '../middlewares';
+import { ROUTES } from '../constants';
 
 export const router = Router();
 
 router.post(
-  '/registration',
+  ROUTES.REGISTRATION,
   requiredBodyUsernameValidation,
   requiredBodyPasswordValidation,
   bodyValidationMiddleware,
   registration,
 );
-router.post('/login', login);
-router.post('/logout', logout);
-router.get('/refresh', refresh);
-router.get('/users', getUsers);
+router.post(ROUTES.LOGIN, login);
+router.post(ROUTES.LOGOUT, logout);
+router.get(ROUTES.REFRESH, refresh);
+router.get(ROUTES.USERS, getUsers);
