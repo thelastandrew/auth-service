@@ -1,4 +1,4 @@
-import { Request, Response, NextFunction } from 'express';
+import { Request, Response } from 'express';
 import { userService } from '../services';
 import { tryCatch } from '../utils';
 import { HTTP_STATUSES, THIRTY_DAYS_NUMBER } from '../constants';
@@ -6,7 +6,7 @@ import { HTTP_STATUSES, THIRTY_DAYS_NUMBER } from '../constants';
 class UserController {
   async registration(
     req: Request<{}, {}, { username: string; password: string }>,
-    res: Response,
+    res: Response
   ) {
     const { username, password } = req.body;
     const userData = await userService.registration(username, password);
@@ -21,7 +21,7 @@ class UserController {
 
   async login(
     req: Request<{}, {}, { username: string; password: string }>,
-    res: Response,
+    res: Response
   ) {
     const { username, password } = req.body;
     const userData = await userService.login(username, password);
@@ -35,13 +35,16 @@ class UserController {
   }
 
   async logout(req: Request, res: Response) {
+    const { refreshToken } = req.cookies;
+    const token = await userService.logout(refreshToken);
+    res.clearCookie('refreshToken');
+
+    res.sendStatus(HTTP_STATUSES.OK_200);
   }
 
-  async refresh(req: Request, res: Response) {
-  }
+  async refresh(req: Request, res: Response) {}
 
-  async getUsers(req: Request, res: Response) {
-  }
+  async getUsers(req: Request, res: Response) {}
 }
 
 const userController = new UserController();

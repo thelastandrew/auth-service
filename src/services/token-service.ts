@@ -3,7 +3,10 @@ import { Types } from 'mongoose';
 import { tokenModel } from '../models';
 import config from '../config';
 import { UserDto } from '../dtos';
-import { ACCESS_TOKEN_EXPIRES_IN, REFRESH_TOKEN_EXPIRES_IN } from '../constants';
+import {
+  ACCESS_TOKEN_EXPIRES_IN,
+  REFRESH_TOKEN_EXPIRES_IN,
+} from '../constants';
 
 const { JWT_ACCESS_SECRET, JWT_REFRESH_SECRET } = config;
 
@@ -20,15 +23,19 @@ class TokenService {
   }
 
   async saveToken(userId: Types.ObjectId, refreshToken: string) {
-      const tokenData = await tokenModel.findOne({ user: userId });
-      if (tokenData) {
-        tokenData.refreshToken = refreshToken;
-        return tokenData.save();
-      }
+    const tokenData = await tokenModel.findOne({ user: userId });
+    if (tokenData) {
+      tokenData.refreshToken = refreshToken;
+      return tokenData.save();
+    }
 
-      const token = await tokenModel.create({ user: userId, refreshToken });
+    const token = await tokenModel.create({ user: userId, refreshToken });
 
-      return token;
+    return token;
+  }
+
+  async removeToken(refreshToken: string) {
+    await tokenModel.deleteOne({ refreshToken });
   }
 }
 

@@ -4,7 +4,6 @@ import { tokenService } from './token-service';
 import { UserDto } from '../dtos';
 import { ApiError } from '../exceptions';
 
-
 class UserService {
   async registration(username: string, password: string) {
     const candidate = await UserModel.findOne({ username });
@@ -40,6 +39,10 @@ class UserService {
     await tokenService.saveToken(userDto.id, tokens.refreshToken);
 
     return { ...tokens, user: userDto };
+  }
+
+  async logout(refreshToken: string) {
+    await tokenService.removeToken(refreshToken);
   }
 }
 
