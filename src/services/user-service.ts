@@ -44,6 +44,31 @@ class UserService {
   async logout(refreshToken: string) {
     await tokenService.removeToken(refreshToken);
   }
+
+  async refresh(refreshToken?: string) {
+    if (!refreshToken) {
+      throw ApiError.Unauthorized();
+    }
+
+    const userData = tokenService.validateRefreshToken(refreshToken);
+    const tokenFromDb = await tokenService.findToken(refreshToken);
+
+    if (!userData || !tokenFromDb) {
+      throw ApiError.Unauthorized();
+    }
+
+    const user = await UserModel.findById(userData.id);
+
+    if (!user) {
+      throw ApiError.NotFound('User not found');
+    }
+
+    const userDto = new UserDto(user);
+    const tokens = tokenService.generateTokens({ ...userDto });
+    await tokenService.saveToken(userDto.id, tokens.refreshToken);
+
+    return { ...tokens, user: userDto };
+  }
 }
 
 export const userService = new UserService();

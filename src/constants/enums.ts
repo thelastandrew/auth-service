@@ -4,9 +4,10 @@ export enum HTTP_STATUSES {
   NO_CONTENT_204 = 204,
 
   BAD_REQUEST_400 = 400,
+  UNAUTHORIZED_401 = 401,
   NOT_FOUND_404 = 404,
 
-  UNEXPECTED_500 = 500
+  UNEXPECTED_500 = 500,
 }
 
 export enum ROUTES {
@@ -14,5 +15,5 @@ export enum ROUTES {
   LOGIN = '/login',
   LOGOUT = '/logout',
   REFRESH = '/refresh',
-  USERS = '/users'
+  USERS = '/users',
 }

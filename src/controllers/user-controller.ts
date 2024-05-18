@@ -42,7 +42,17 @@ class UserController {
     res.sendStatus(HTTP_STATUSES.OK_200);
   }
 
-  async refresh(req: Request, res: Response) {}
+  async refresh(req: Request, res: Response) {
+    const { refreshToken } = req.cookies;
+    const userData = await userService.refresh(refreshToken);
+
+    res.cookie('refreshToken', userData.refreshToken, {
+      maxAge: THIRTY_DAYS_NUMBER,
+      httpOnly: true,
+    });
+
+    res.status(HTTP_STATUSES.CREATED_201).json(userData);
+  }
 
   async getUsers(req: Request, res: Response) {}
 }

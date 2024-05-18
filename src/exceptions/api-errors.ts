@@ -1,7 +1,11 @@
-import { HTTP_STATUSES } from "../constants";
+import { HTTP_STATUSES } from '../constants';
 
 export class ApiError extends Error {
-  constructor(public status: number, public message: string, public errors: any[] = []) {
+  constructor(
+    public status: number,
+    public message: string,
+    public errors: any[] = []
+  ) {
     super(message);
     Object.setPrototypeOf(this, ApiError.prototype);
   }
@@ -12,5 +16,9 @@ export class ApiError extends Error {
 
   static NotFound(message: string = 'Source not found') {
     return new ApiError(HTTP_STATUSES.NOT_FOUND_404, message);
+  }
+
+  static Unauthorized(message: string = 'Unauthoruzed') {
+    return new ApiError(HTTP_STATUSES.UNAUTHORIZED_401, message);
   }
 }
