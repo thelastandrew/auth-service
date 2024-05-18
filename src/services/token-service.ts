@@ -34,7 +34,7 @@ class TokenService {
 
   validateAccessToken(token: string) {
     try {
-      const userData = jwt.verify(token, JWT_ACCESS_SECRET);
+      const userData = <UserDto>jwt.verify(token, JWT_ACCESS_SECRET);
 
       return userData;
     } catch (err) {

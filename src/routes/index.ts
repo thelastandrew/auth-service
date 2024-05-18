@@ -4,6 +4,7 @@ import {
   requiredBodyUsernameValidation,
   requiredBodyPasswordValidation,
   bodyValidationMiddleware,
+  authMiddleware,
 } from '../middlewares';
 import { ROUTES } from '../constants';
 
@@ -14,7 +15,7 @@ router.post(
   requiredBodyUsernameValidation,
   requiredBodyPasswordValidation,
   bodyValidationMiddleware,
-  registration,
+  registration
 );
 
 router.post(
@@ -27,4 +28,4 @@ router.post(
 
 router.post(ROUTES.LOGOUT, logout);
 router.get(ROUTES.REFRESH, refresh);
-router.get(ROUTES.USERS, getUsers);
+router.get(ROUTES.USERS, authMiddleware, getUsers);

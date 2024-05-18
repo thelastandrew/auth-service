@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
 import { userService } from '../services';
 import { tryCatch } from '../utils';
-import { HTTP_STATUSES, THIRTY_DAYS_NUMBER } from '../constants';
+import { HTTP_STATUSES, REFRESH_TOKEN, THIRTY_DAYS_NUMBER } from '../constants';
 
 class UserController {
   async registration(
@@ -11,7 +11,7 @@ class UserController {
     const { username, password } = req.body;
     const userData = await userService.registration(username, password);
 
-    res.cookie('refreshToken', userData.refreshToken, {
+    res.cookie(REFRESH_TOKEN, userData.refreshToken, {
       maxAge: THIRTY_DAYS_NUMBER,
       httpOnly: true,
     });
@@ -26,7 +26,7 @@ class UserController {
     const { username, password } = req.body;
     const userData = await userService.login(username, password);
 
-    res.cookie('refreshToken', userData.refreshToken, {
+    res.cookie(REFRESH_TOKEN, userData.refreshToken, {
       maxAge: THIRTY_DAYS_NUMBER,
       httpOnly: true,
     });
@@ -37,7 +37,7 @@ class UserController {
   async logout(req: Request, res: Response) {
     const { refreshToken } = req.cookies;
     const token = await userService.logout(refreshToken);
-    res.clearCookie('refreshToken');
+    res.clearCookie(REFRESH_TOKEN);
 
     res.sendStatus(HTTP_STATUSES.OK_200);
   }
@@ -46,7 +46,7 @@ class UserController {
     const { refreshToken } = req.cookies;
     const userData = await userService.refresh(refreshToken);
 
-    res.cookie('refreshToken', userData.refreshToken, {
+    res.cookie(REFRESH_TOKEN, userData.refreshToken, {
       maxAge: THIRTY_DAYS_NUMBER,
       httpOnly: true,
     });
@@ -54,7 +54,10 @@ class UserController {
     res.status(HTTP_STATUSES.CREATED_201).json(userData);
   }
 
-  async getUsers(req: Request, res: Response) {}
+  async getUsers(req: Request, res: Response) {
+    const users = await userService.getUsers();
+    res.json(users);
+  }
 }
 
 const userController = new UserController();
