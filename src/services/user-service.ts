@@ -73,6 +73,15 @@ class UserService {
   async getUsers() {
     return await UserModel.find();
   }
+
+  async getUserById(id: string) {
+    const foundUser = await UserModel.findById(id);
+    if (!foundUser) {
+      throw ApiError.NotFound('User not found');
+    }
+
+    return foundUser;
+  }
 }
 
 export const userService = new UserService();

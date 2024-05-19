@@ -1,5 +1,12 @@
 import { Router } from 'express';
-import { registration, login, logout, refresh, getUsers } from '../controllers';
+import {
+  registration,
+  login,
+  logout,
+  refresh,
+  getUsers,
+  getUserById,
+} from '../controllers';
 import {
   requiredBodyUsernameValidation,
   requiredBodyPasswordValidation,
@@ -29,3 +36,4 @@ router.post(
 router.post(ROUTES.LOGOUT, logout);
 router.get(ROUTES.REFRESH, refresh);
 router.get(ROUTES.USERS, authMiddleware, getUsers);
+router.get(`${ROUTES.USERS}/:id`, authMiddleware, getUserById);

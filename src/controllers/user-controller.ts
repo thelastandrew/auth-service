@@ -36,7 +36,7 @@ class UserController {
 
   async logout(req: Request, res: Response) {
     const { refreshToken } = req.cookies;
-    const token = await userService.logout(refreshToken);
+    await userService.logout(refreshToken);
     res.clearCookie(REFRESH_TOKEN);
 
     res.sendStatus(HTTP_STATUSES.OK_200);
@@ -58,6 +58,12 @@ class UserController {
     const users = await userService.getUsers();
     res.json(users);
   }
+
+  async getUserById(req: Request<{ id: string }>, res: Response) {
+    const { id } = req.params;
+    const foundUser = await userService.getUserById(id);
+    res.json(foundUser);
+  }
 }
 
 const userController = new UserController();
@@ -67,3 +73,4 @@ export const login = tryCatch(userController.login);
 export const logout = tryCatch(userController.logout);
 export const refresh = tryCatch(userController.refresh);
 export const getUsers = tryCatch(userController.getUsers);
+export const getUserById = tryCatch(userController.getUserById);
